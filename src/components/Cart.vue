@@ -19,16 +19,16 @@
       <div class="summary">
         <ul>
           <li>
-            Subtotal <span>{{ subTotal }}</span>
+            Subtotal <span>{{ priceUsd(subTotal) }}</span>
           </li>
           <li v-if="discount > 0">
-            Discount <span>{{ discountPrice }}</span>
+            Discount <span>{{ priceUsd(discountPrice) }}</span>
           </li>
           <li>
-            Tax <span>{{ tax }}</span>
+            Tax <span>{{ tax }} %</span>
           </li>
           <li class="total">
-            Total <span>{{ totalPrice }}</span>
+            Total <span>{{ priceUsd(totalPrice) }}</span>
           </li>
         </ul>
       </div>
@@ -62,7 +62,7 @@ export default {
           quantity: 1,
         },
       ],
-      tax: 5,
+      tax: 10,
       promotions: [
         {
           code: 'SUMMER',
@@ -104,8 +104,8 @@ export default {
       return (this.subTotal * this.discount) / 100
     },
     totalPrice: function() {
-      return this.subTotal - this.discountPrice + this.tax
-    },
+      return this.subTotal - this.discountPrice + (this.tax / 100)*this.subTotal
+    }
     },
     methods: {
         updateQuantity: function(...data) {
@@ -131,6 +131,9 @@ export default {
                 }
             }
             alert('Sorry, the Promotional code you entered is not valid!')
+        },
+        priceUsd: function(value) {
+            return '$' + value.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
         },
     },
     components: {

@@ -18,7 +18,7 @@
                   <a href="#">{{ product.name }}</a>
                 </div>
                 <div class="description">{{ product.description }}</div>
-                <div class="price">{{ product.price }}</div>
+                <div class="price">{{ priceUsd(product.price) }}</div>
               </div>
             </div>
 
@@ -89,7 +89,10 @@ export default {
     },
     removeItem: function(index) {
       this.$emit('removeItem', index)
-    }
+    },
+    priceUsd: function(value) {
+            return '$' + value.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    },
     }
 }
 </script>
