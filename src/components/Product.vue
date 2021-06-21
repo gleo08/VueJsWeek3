@@ -69,26 +69,25 @@ export default {
     methods: {
     updateQuantity: function(index, event) {
       var value = event.target.value
-      console.log(value)
-      console.log(index)
       var valueInt = parseInt(value)
-      console.log(valueInt)
-
+      var _this = this
       // Minimum quantity is 1, maximum quantity is 100, can left blank to input easily
       if (value === '') {
-        this.$emit('updateQuantity', index, value)
+        _this.$emit('updateQuantity', index, value)
       } else if (valueInt > 0 && valueInt < 100) {
-        this.$emit('updateQuantity', index, valueInt)
+        _this.$emit('updateQuantity', index, valueInt)
       }
     },
     checkQuantity: function(index, event) {
+      var _this = this
       // Update quantity to 1 if it is empty
       if (event.target.value === '') {
-        this.$emit('checkQuantity', index, 1)
+        _this.$emit('checkQuantity', index, 1)
       }
     },
     removeItem: function(index) {
-      this.$emit('removeItem', index)
+      var _this = this
+      _this.$emit('removeItem', index)
     },
     priceUsd: function(value) {
             return '$' + value.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
