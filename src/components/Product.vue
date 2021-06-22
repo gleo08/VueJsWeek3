@@ -4,7 +4,7 @@
         <ul class="products">
           <li
             class="row"
-            v-for="(product, index) in products"
+            v-for="product in products"
             :key="product.name"
           >
             <div class="col left">
@@ -29,14 +29,14 @@
                   class="quantity"
                   step="1"
                   :value="product.quantity"
-                  @input="updateQuantity(index, $event)"
-                  @blur="checkQuantity(index, $event)"
+                  @input="updateQuantity(product.id, $event)"
+                  @blur="checkQuantity(product.id, $event)"
                 />
               </div>
 
               <div class="remove">
                 <svg
-                  @click="removeItem(index)"
+                  @click="removeItem(product.id)"
                   version="1.1"
                   class="close"
                   x="0px"
@@ -54,10 +54,6 @@
           </li>
         </ul>
       </div>
-      <div v-else class="empty-product">
-        <h3>There are no products in your cart.</h3>
-        <button>Shopping now</button>
-      </div>
     </section>
 </template>
 
@@ -67,27 +63,27 @@ export default {
     props: ['products'],
     emits: ['updateQuantity', 'checkQuantity', 'removeItem'],
     methods: {
-    updateQuantity: function(index, event) {
+    updateQuantity: function(id, event) {
       var value = event.target.value
       var valueInt = parseInt(value)
-      var _this = this
+      let _this = this
       // Minimum quantity is 1, maximum quantity is 100, can left blank to input easily
       if (value === '') {
-        _this.$emit('updateQuantity', index, value)
+        _this.$emit('updateQuantity', id, value)
       } else if (valueInt > 0 && valueInt < 100) {
-        _this.$emit('updateQuantity', index, valueInt)
+        _this.$emit('updateQuantity', id, valueInt)
       }
     },
-    checkQuantity: function(index, event) {
-      var _this = this
+    checkQuantity: function(id, event) {
+      let _this = this
       // Update quantity to 1 if it is empty
       if (event.target.value === '') {
-        _this.$emit('checkQuantity', index, 1)
+        _this.$emit('checkQuantity', id, 1)
       }
     },
-    removeItem: function(index) {
-      var _this = this
-      _this.$emit('removeItem', index)
+    removeItem: function(id) {
+      let _this = this
+      _this.$emit('removeItem', id)
     },
     priceUsd: function(value) {
             return '$' + value.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");

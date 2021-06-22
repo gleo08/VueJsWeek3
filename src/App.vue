@@ -8,6 +8,10 @@
       </ul>
       <span class="count">{{ itemCount }} items in the bag</span>
     </header>
+    <div v-if="!products.length" class="empty-product">
+      <h3>There are no products in your cart.</h3>
+      <button @click="reloadProduct">Shopping now</button>
+    </div>
     <Product :products="products" @updateQuantity="updateQuantity" @checkQuantity="checkQuantity" @removeItem="removeItem"/>
     <section class="container" v-if="products.length > 0">
       <div class="promotion">
@@ -25,14 +29,13 @@
             Discount <span>{{ priceUsd(discountPrice) }}</span>
           </li>
           <li>
-            Tax <span>{{ tax }} %</span>
+            Tax <span>{{ priceUsd(taxValue) }} </span>
           </li>
           <li class="total">
             Total <span>{{ priceUsd(totalPrice) }}</span>
           </li>
         </ul>
       </div>
-
       <div class="checkout">
         <button type="button">Check Out</button>
       </div>
@@ -87,8 +90,14 @@ export default {
       ],
       promoCode: '',
       discount: 0,
+      productList: []
     }
   },
+
+  created() {
+    this.productList = this.products
+  },
+
     computed: {
     itemCount: function() {
       var count = 0
@@ -111,27 +120,34 @@ export default {
     discountPrice: function() {
       return (this.subTotal * this.discount) / 100
     },
+    taxValue: function() {
+      return (this.tax / 100)* this.subTotal
+    },
     totalPrice: function() {
-      return this.subTotal - this.discountPrice + (this.tax / 100)*this.subTotal
+      return this.subTotal - this.discountPrice + this.taxValue
     }
     },
     methods: {
         updateQuantity: function(...data) {
-            var _this = this
-            const [index, value] = data
-            var product = this.products[index];
-            product.quantity = value;
-            _this.$set(this.products, index, product)
+            const [id, value] = data
+            for (let i = 0; i < this.products.length; i++) {
+              if (this.products[i].id == id) {
+                this.products[i].quantity = value
+              }
+            }
         },
         checkQuantity: function(...data) {
-            var _this = this
-            const [index, quantity] = data
-            var product = this.products[index];
-            product.quantity = quantity;
-            _this.$set(this.products, index, product)
+            const [id, quantity] = data
+            for (let i = 0; i < this.products.length; i++) {
+              if (this.products[i].id == id) {
+                this.products[i].quantity = quantity
+              }
+            }
         },
-        removeItem: function(index) {
-            this.products.splice(index, 1);
+        removeItem: function(id) {
+            this.products = this.products.filter(
+              (product) => product.id !== id
+            );
         },
         checkPromoCode: function() {
             for (var i = 0; i < this.promotions.length; i++) {
@@ -145,6 +161,9 @@ export default {
         priceUsd: function(value) {
             return '$' + value.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
         },
+        reloadProduct: function() {
+          this.products = this.productList;
+        }
     },
     components: {
         Product,
