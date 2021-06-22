@@ -12,7 +12,17 @@
       <h3>There are no products in your cart.</h3>
       <button @click="reloadProduct">Shopping now</button>
     </div>
-    <Product :products="products" @updateQuantity="updateQuantity" @checkQuantity="checkQuantity" @removeItem="removeItem"/>
+    <div v-if="products.length > 0">
+        <ul class="products">
+          <li
+            class="row"
+            v-for="product in products"
+            :key="product.name"
+          >
+            <Product :product="product" @updateQuantity="updateQuantity" @checkQuantity="checkQuantity" @removeItem="removeItem"/>
+          </li>
+          </ul>
+          </div>
     <section class="container" v-if="products.length > 0">
       <div class="promotion">
         <label for="promo-code">Have A Promo Code?</label>

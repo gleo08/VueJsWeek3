@@ -1,12 +1,5 @@
 <template>
         <section class="container">
-      <div v-if="products.length > 0">
-        <ul class="products">
-          <li
-            class="row"
-            v-for="product in products"
-            :key="product.name"
-          >
             <div class="col left">
               <div class="thumbnail">
                 <a href="#">
@@ -21,7 +14,6 @@
                 <div class="price">{{ priceUsd(product.price) }}</div>
               </div>
             </div>
-
             <div class="col right">
               <div class="quantity">
                 <input
@@ -33,10 +25,9 @@
                   @blur="checkQuantity(product.id, $event)"
                 />
               </div>
-
               <div class="remove">
                 <svg
-                  @click="removeItem(product.id)"
+                  @click="showModal"
                   version="1.1"
                   class="close"
                   x="0px"
@@ -51,43 +42,54 @@
                 </svg>
               </div>
             </div>
-          </li>
-        </ul>
-      </div>
+            <Modal v-if="isShow" @confirmModal="removeItem(product.id)" @closeModal="closeModal"/>
     </section>
 </template>
 
 <script>
+import Modal from "./Modal.vue"
 export default {
     name: "Product",
-    props: ['products'],
+    data() {
+      return {
+        isShow: false,
+      }
+    },
+    props: ['product'],
     emits: ['updateQuantity', 'checkQuantity', 'removeItem'],
     methods: {
     updateQuantity: function(id, event) {
       var value = event.target.value
       var valueInt = parseInt(value)
-      let _this = this
       // Minimum quantity is 1, maximum quantity is 100, can left blank to input easily
       if (value === '') {
-        _this.$emit('updateQuantity', id, value)
+        this.$emit('updateQuantity', id, value)
       } else if (valueInt > 0 && valueInt < 100) {
-        _this.$emit('updateQuantity', id, valueInt)
+        this.$emit('updateQuantity', id, valueInt)
       }
     },
     checkQuantity: function(id, event) {
-      let _this = this
       // Update quantity to 1 if it is empty
       if (event.target.value === '') {
-        _this.$emit('checkQuantity', id, 1)
+        this.$emit('checkQuantity', id, 1)
       }
     },
     removeItem: function(id) {
-      let _this = this
-      _this.$emit('removeItem', id)
+      this.isShow = false;
+      this.$emit('removeItem', id)
     },
     priceUsd: function(value) {
             return '$' + value.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
     },
+    showModal: function() {
+      this.isShow = true;
+    },
+    closeModal: function() {
+      this.isShow = false;
+    }
+    },
+    components: {
+      Modal,
     }
 }
 </script>
