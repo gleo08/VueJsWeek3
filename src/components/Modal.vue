@@ -56,9 +56,9 @@ p {
     margin-bottom: 20px;
 }
 .btn {
-    background: #428bca;
-    border: #357ebd solid 1px;
-    border-radius: 3px;
+  background-color: #181907;
+  border: 5px solid #181907;
+    border-radius: 10px;
     color: #fff;
     display: inline-block;
     font-size: 14px;
@@ -70,7 +70,7 @@ p {
     transition: color .1s ease;
 }
 .btn:hover {
-    background: #357ebd;
+    background: #181907;
 }
 .btn.btn-big {
     font-size: 18px;
